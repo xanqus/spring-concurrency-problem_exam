@@ -1,3 +1,6 @@
+server:
+  port: 8234
+
 spring:
   jpa:
     hibernate:
