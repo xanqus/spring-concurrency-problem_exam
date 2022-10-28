@@ -19,6 +19,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 class StockApplicationTests {
 
+
 	@BeforeEach
 	public void before() {
 		Stock stock = new Stock(1L, 100L);
@@ -37,8 +38,20 @@ class StockApplicationTests {
 	@Autowired
 	private StockRepository stockRepository;
 
+
 	@Test
-	void contextLoads() throws InterruptedException {
+	void test1() {
+		for(int i = 0; i < 100; i++) {
+			stockService.decrease(1L, 1L);
+		}
+		Stock stock = stockRepository.findById(1L).orElseThrow();
+		assertThat(stock.getQuantity())
+				.isEqualTo(0L);
+
+	}
+
+	@Test
+	void test2() throws InterruptedException {
 
 		int threadCount = 100;
 		ExecutorService executorService = Executors.newFixedThreadPool(32);

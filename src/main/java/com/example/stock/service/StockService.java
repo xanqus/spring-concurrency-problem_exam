@@ -4,6 +4,8 @@ import com.example.stock.domain.Stock;
 import com.example.stock.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class StockService {
 
@@ -13,7 +15,8 @@ public class StockService {
         this.stockRepository = stockRepository;
     }
 
-    public void decrease(Long id, Long quantity) {
+
+    public synchronized void decrease(Long id, Long quantity) {
         Stock stock = stockRepository.findById(id).orElseThrow();
 
         stock.decrease(quantity);
