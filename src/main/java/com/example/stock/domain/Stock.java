@@ -1,9 +1,6 @@
 package com.example.stock.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.transaction.Transactional;
 
 @Entity
@@ -16,6 +13,9 @@ public class Stock {
     private Long productId;
 
     private Long quantity;
+
+    @Version
+    private Long version;
 
     public Stock() {
 
@@ -31,8 +31,8 @@ public class Stock {
     }
 
 
-    public  void decrease(Long quantity) {
-        if(this.quantity - quantity < 0) {
+    public void decrease(Long quantity) {
+        if (this.quantity - quantity < 0) {
             throw new RuntimeException("stock이 0 이하입니다.");
         }
 
