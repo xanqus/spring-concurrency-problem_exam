@@ -3,6 +3,7 @@ package com.example.stock;
 
 import com.example.stock.domain.Stock;
 import com.example.stock.repository.StockRepository;
+import com.example.stock.service.PessimisticLockStockService;
 import com.example.stock.service.StockService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,6 +20,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 @SpringBootTest
 class StockApplicationTests {
 
+	@Autowired
+	private StockService stockService;
+
+	@Autowired
+	private StockRepository stockRepository;
+
+	@Autowired
+	private PessimisticLockStockService pessimisticLockStockService;
+
 
 	@BeforeEach
 	public void before() {
@@ -31,12 +41,6 @@ class StockApplicationTests {
 	public void after() {
 		stockRepository.deleteAll();
 	}
-
-	@Autowired
-	private StockService stockService;
-
-	@Autowired
-	private StockRepository stockRepository;
 
 
 	@Test
@@ -61,6 +65,30 @@ class StockApplicationTests {
 			executorService.submit(() -> {
 				try {
 					stockService.decrease(1L, 1L);
+				} finally {
+					latch.countDown();
+				}
+			});
+		}
+		latch.await();
+
+		Stock stock = stockRepository.findById(1L).orElseThrow();
+
+		assertThat(stock.getQuantity())
+				.isEqualTo(0L);
+	}
+
+	@Test
+	void test3() throws InterruptedException {
+
+		int threadCount = 100;
+		ExecutorService executorService = Executors.newFixedThreadPool(32);
+		CountDownLatch latch = new CountDownLatch(threadCount);
+
+		for(int i = 0; i < threadCount; i++) {
+			executorService.submit(() -> {
+				try {
+					pessimisticLockStockService.decrease(1L, 1L);
 				} finally {
 					latch.countDown();
 				}
