@@ -18,7 +18,6 @@ public class OptimisticLockStockService {
     @Transactional
     public void decrease(Long productId, Long quantity) {
         Stock stock = stockRepository.findByIdWithOptimisticLock(productId);
-        System.out.println("stock: " + stock);
 
         stock.decrease(quantity);
 
