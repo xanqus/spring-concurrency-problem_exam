@@ -12,12 +12,12 @@ import java.util.Optional;
 public interface StockRepository extends JpaRepository<Stock, Long> {
 
     @Lock(value = LockModeType.PESSIMISTIC_WRITE)
-    @Query("select s from Stock s where s.productId = :id")
-    Stock findByIdWithPessimisticLock(@Param("id") Long productId);
+    @Query("select s from Stock s where s.productId = :productId")
+    Stock findByIdWithPessimisticLock(@Param("productId") Long productId);
 
     @Lock(value = LockModeType.OPTIMISTIC)
-    @Query("select s from Stock s where s.productId = :id")
-    Stock findByIdWithOptimisticLock(@Param("id") Long productId);
+    @Query("select s from Stock s where s.productId = :productId")
+    Stock findByIdWithOptimisticLock(@Param("productId") Long productId);
 
     Optional<Stock> findByProductId(Long productId);
 }
