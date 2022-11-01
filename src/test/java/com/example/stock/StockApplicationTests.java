@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import javax.transaction.Transactional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 class StockApplicationTests {
+
 
 	@Autowired
 	private StockService stockService;
@@ -36,9 +38,12 @@ class StockApplicationTests {
 
 	@BeforeEach
 	public void before() {
+
 		Stock stock = new Stock(1L, 100L);
 
 		stockRepository.saveAndFlush(stock);
+
+
 	}
 
 	@AfterEach
@@ -52,7 +57,7 @@ class StockApplicationTests {
 		for(int i = 0; i < 100; i++) {
 			stockService.decrease(1L, 1L);
 		}
-		Stock stock = stockRepository.findById(1L).orElseThrow();
+		Stock stock = stockRepository.findByProductId(1L).orElseThrow();
 		assertThat(stock.getQuantity())
 				.isEqualTo(0L);
 
@@ -76,7 +81,7 @@ class StockApplicationTests {
 		}
 		latch.await();
 
-		Stock stock = stockRepository.findById(1L).orElseThrow();
+		Stock stock = stockRepository.findByProductId(1L).orElseThrow();
 
 		assertThat(stock.getQuantity())
 				.isEqualTo(0L);
@@ -100,7 +105,7 @@ class StockApplicationTests {
 		}
 		latch.await();
 
-		Stock stock = stockRepository.findById(1L).orElseThrow();
+		Stock stock = stockRepository.findByProductId(1L).orElseThrow();
 
 		assertThat(stock.getQuantity())
 				.isEqualTo(0L);
@@ -126,7 +131,7 @@ class StockApplicationTests {
 		}
 		latch.await();
 
-		Stock stock = stockRepository.findById(1L).orElseThrow();
+		Stock stock = stockRepository.findByProductId(1L).orElseThrow();
 
 		assertThat(stock.getQuantity())
 				.isEqualTo(0L);

@@ -15,10 +15,10 @@ public class OptimisticLockStockFacade {
     }
 
 
-    public void decrease(Long id, Long quantity) throws InterruptedException {
+    public void decrease(Long productId, Long quantity) throws InterruptedException {
         while(true) {
             try {
-                optimisticLockStockService.decrease(id, quantity);
+                optimisticLockStockService.decrease(productId, quantity);
 
                 break;
             } catch( Exception e ) {
